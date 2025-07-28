@@ -21,6 +21,9 @@ export function ContactSection() {
   const [contactNumberError, setContactNumberError] = useState("")
   const [errorMessage, setErrorMessage] = useState("")
 
+  // Replace this URL with your Google Apps Script Web App URL
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/a/macros/scandalousfoods.in/s/AKfycbxCJN7uwiKALeU1De1buoogmjpQ2dRtccY45UcAfJayCfOAOZky8HYbPcPI0-SvuID0cw/exec"
+
   const handleInputChange = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value })
     // Clear error when user starts typing
@@ -75,38 +78,32 @@ export function ContactSection() {
       return
     }
 
+    // Check if Google Script URL is configured
+    if (GOOGLE_SCRIPT_URL.includes("YOUR_SCRIPT_ID_HERE")) {
+      setSubmitStatus("error")
+      setErrorMessage("Form is not properly configured. Please contact us directly at sales@scandalousfoods.in")
+      return
+    }
+
     setIsSubmitting(true)
     setSubmitStatus("idle")
     setErrorMessage("")
 
     try {
-      console.log("Form submission data:", formData)
+      console.log("Submitting form data:", formData)
 
-      // Create email body with form data
-      const emailBody = `
-New Partnership Inquiry - Scandalous Foods
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+        mode: "no-cors", // Required for Google Apps Script
+      })
 
-Name: ${formData.name}
-Restaurant Name: ${formData.restaurantName}
-Designation: ${formData.designation}
-Location: ${formData.location}
-Email: ${formData.email}
-Contact Number: ${formData.contactNumber}
-Message: ${formData.message}
-
-Submitted on: ${new Date().toLocaleString()}
-      `.trim()
-
-      // Create mailto link
-      const subject = encodeURIComponent("Partnership Inquiry - Scandalous Foods")
-      const body = encodeURIComponent(emailBody)
-      const mailtoLink = `mailto:sales@scandalousfoods.in?subject=${subject}&body=${body}`
-
-      // Simulate processing time
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-
-      // Open email client
-      window.location.href = mailtoLink
+      // Since we're using no-cors mode, we can't read the response
+      // But if we reach here without throwing an error, it likely worked
+      console.log("Form submitted successfully")
 
       setSubmitStatus("success")
       setShowThankYouModal(true)
@@ -125,9 +122,7 @@ Submitted on: ${new Date().toLocaleString()}
     } catch (error) {
       console.error("Form submission error:", error)
       setSubmitStatus("error")
-      setErrorMessage(
-        "There was an error processing your request. Please try again or contact us directly at sales@scandalousfoods.in",
-      )
+      setErrorMessage("There was an error submitting your form. Please try again or contact us directly.")
     } finally {
       setIsSubmitting(false)
     }
@@ -266,7 +261,7 @@ Submitted on: ${new Date().toLocaleString()}
                 {isSubmitting ? (
                   <>
                     <Loader2 className="animate-spin -ml-1 mr-3 h-5 w-5" />
-                    Processing...
+                    Submitting...
                   </>
                 ) : (
                   "Partner With Us"
@@ -300,8 +295,8 @@ Submitted on: ${new Date().toLocaleString()}
               <h2 className="text-2xl font-bold text-[#1D1D1D] font-['Poppins'] mb-4">Thank You for Your Interest!</h2>
 
               <p className="text-[#1D1D1D] font-['Open_Sans'] mb-6 leading-relaxed">
-                Your email client should open with your inquiry details. Our team will get back to you within{" "}
-                <span className="font-semibold text-[#FF6B2B]">24 hours</span>.
+                We've successfully received your inquiry and appreciate your interest in Scandalous Foods. Our team will
+                get back to you within <span className="font-semibold text-[#FF6B2B]">24 hours</span>.
               </p>
 
               <div className="bg-[#FFF5EB] rounded-lg p-4 mb-6">
@@ -320,11 +315,6 @@ Submitted on: ${new Date().toLocaleString()}
                   Call us at{" "}
                   <a href="tel:+918657272865" className="text-[#FF6B2B] font-semibold">
                     +91 8657272865
-                  </a>
-                  <br />
-                  Email:{" "}
-                  <a href="mailto:sales@scandalousfoods.in" className="text-[#FF6B2B] font-semibold">
-                    sales@scandalousfoods.in
                   </a>
                 </p>
               </div>
