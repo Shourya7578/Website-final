@@ -21,8 +21,16 @@ export function ContactSection() {
   const [contactNumberError, setContactNumberError] = useState("")
   const [errorMessage, setErrorMessage] = useState("")
 
-  // Replace this URL with your Google Apps Script Web App URL
-  const GOOGLE_SCRIPT_URL = "https://script.google.com/a/macros/scandalousfoods.in/s/AKfycbxCJN7uwiKALeU1De1buoogmjpQ2dRtccY45UcAfJayCfOAOZky8HYbPcPI0-SvuID0cw/exec"
+  // Google Apps Script Web App URL - Your actual URL should be here
+  const GOOGLE_SCRIPT_URL =
+    process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL ||
+    "https://script.google.com/a/macros/scandalousfoods.in/s/AKfycbxCJN7uwiKALeU1De1buoogmjpQ2dRtccY45UcAfJayCfOAOZky8HYbPcPI0-SvuID0cw/exec"
+
+  // Add validation to check if URL is properly configured
+  const isGoogleScriptConfigured =
+    GOOGLE_SCRIPT_URL &&
+    !GOOGLE_SCRIPT_URL.includes("YOUR_ACTUAL_GOOGLE_APPS_SCRIPT_URL_HERE") &&
+    GOOGLE_SCRIPT_URL.startsWith("https://script.google.com")
 
   const handleInputChange = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value })
@@ -57,6 +65,43 @@ export function ContactSection() {
     handleInputChange("contactNumber", value)
   }
 
+  const submitToGoogleSheets = async (data: typeof formData) => {
+    try {
+      console.log("Submitting to Google Sheets URL:", GOOGLE_SCRIPT_URL)
+      console.log("Is Google Script configured:", isGoogleScriptConfigured)
+
+      if (!isGoogleScriptConfigured) {
+        throw new Error("Google Apps Script URL not properly configured")
+      }
+
+      // Create form data for Google Apps Script
+      const formDataToSend = new FormData()
+      formDataToSend.append("name", data.name)
+      formDataToSend.append("restaurantName", data.restaurantName)
+      formDataToSend.append("designation", data.designation)
+      formDataToSend.append("location", data.location)
+      formDataToSend.append("email", data.email)
+      formDataToSend.append("contactNumber", data.contactNumber)
+      formDataToSend.append("message", data.message)
+      formDataToSend.append("timestamp", new Date().toISOString())
+
+      console.log("Form data being sent:", Object.fromEntries(formDataToSend))
+
+      // Submit to Google Apps Script
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        body: formDataToSend,
+        mode: "no-cors", // Required for Google Apps Script
+      })
+
+      console.log("Google Sheets submission completed successfully")
+      return { success: true }
+    } catch (error) {
+      console.error("Google Sheets submission error:", error)
+      throw error
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -78,33 +123,17 @@ export function ContactSection() {
       return
     }
 
-    // Check if Google Script URL is configured
-    if (GOOGLE_SCRIPT_URL.includes("YOUR_SCRIPT_ID_HERE")) {
-      setSubmitStatus("error")
-      setErrorMessage("Form is not properly configured. Please contact us directly at sales@scandalousfoods.in")
-      return
-    }
-
     setIsSubmitting(true)
     setSubmitStatus("idle")
     setErrorMessage("")
 
     try {
-      console.log("Submitting form data:", formData)
+      console.log("Form submission data:", formData)
 
-      const response = await fetch(GOOGLE_SCRIPT_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-        mode: "no-cors", // Required for Google Apps Script
-      })
+      // Submit to Google Sheets
+      await submitToGoogleSheets(formData)
 
-      // Since we're using no-cors mode, we can't read the response
-      // But if we reach here without throwing an error, it likely worked
-      console.log("Form submitted successfully")
-
+      console.log("Form submitted successfully to Google Sheets")
       setSubmitStatus("success")
       setShowThankYouModal(true)
 
@@ -122,7 +151,9 @@ export function ContactSection() {
     } catch (error) {
       console.error("Form submission error:", error)
       setSubmitStatus("error")
-      setErrorMessage("There was an error submitting your form. Please try again or contact us directly.")
+      setErrorMessage(
+        "There was an error submitting your form. Please try again or contact us directly at sales@scandalousfoods.in",
+      )
     } finally {
       setIsSubmitting(false)
     }
@@ -261,7 +292,7 @@ export function ContactSection() {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="animate-spin -ml-1 mr-3 h-5 w-5" />
-                    Submitting...
+                    Submitting to Google Sheets...
                   </>
                 ) : (
                   "Partner With Us"
@@ -292,11 +323,13 @@ export function ContactSection() {
                 <CheckCircle className="w-8 h-8 text-green-600" />
               </div>
 
-              <h2 className="text-2xl font-bold text-[#1D1D1D] font-['Poppins'] mb-4">Thank You for Your Interest!</h2>
+              <h2 className="text-2xl font-bold text-[#1D1D1D] font-['Poppins'] mb-4">
+                Successfully Submitted to Google Sheets!
+              </h2>
 
               <p className="text-[#1D1D1D] font-['Open_Sans'] mb-6 leading-relaxed">
-                We've successfully received your inquiry and appreciate your interest in Scandalous Foods. Our team will
-                get back to you within <span className="font-semibold text-[#FF6B2B]">24 hours</span>.
+                Your inquiry has been saved to our Google Sheets database and our team will get back to you within{" "}
+                <span className="font-semibold text-[#FF6B2B]">24 hours</span>.
               </p>
 
               <div className="bg-[#FFF5EB] rounded-lg p-4 mb-6">
@@ -315,6 +348,11 @@ export function ContactSection() {
                   Call us at{" "}
                   <a href="tel:+918657272865" className="text-[#FF6B2B] font-semibold">
                     +91 8657272865
+                  </a>
+                  <br />
+                  Email:{" "}
+                  <a href="mailto:sales@scandalousfoods.in" className="text-[#FF6B2B] font-semibold">
+                    sales@scandalousfoods.in
                   </a>
                 </p>
               </div>
