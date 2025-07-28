@@ -1,0 +1,219 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #fff5eb;
+  --foreground: #1d1d1d;
+  --primary: #ff6b2b;
+  --success: #16a34a;
+  --success-light: #22c55e;
+  --muted: #e6e6e6;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-open-sans);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #fff5eb;
+    --foreground: #1d1d1d;
+  }
+}
+
+/* Custom animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scroll-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes cardPop {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9) rotate(2deg);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.02) rotate(-1deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes seasonalPop {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.8) rotate(3deg);
+  }
+  60% {
+    transform: translateY(-3px) scale(1.05) rotate(-1deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.85);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateY(-5px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes seasonalFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.8) rotate(2deg);
+  }
+  60% {
+    opacity: 0.8;
+    transform: translateY(-3px) scale(1.05) rotate(-0.5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-scroll {
+  animation: scroll 15s linear infinite;
+}
+
+.animate-scroll-reverse {
+  animation: scroll-reverse 12s linear infinite;
+}
+
+.animate-card-pop {
+  animation: cardPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.animate-seasonal-pop {
+  animation: seasonalPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.animate-fade-in-scale {
+  animation: fadeInScale 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.animate-seasonal-fade-in {
+  animation: seasonalFadeIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Smooth transitions for all interactive elements */
+button,
+a,
+input,
+select,
+textarea {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ff6b2b;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #e55a24;
+}
+
+/* Card hover effects */
+.product-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Seasonal card special effects */
+.seasonal-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.seasonal-card:hover {
+  transform: translateY(-6px) scale(1.03) rotate(-1deg);
+  box-shadow: 0 20px 40px -12px rgba(255, 107, 43, 0.3);
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 640px) {
+  .product-card {
+    transition: all 0.3s ease-out;
+  }
+
+  .product-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 15px 30px -8px rgba(0, 0, 0, 0.2);
+  }
+
+  .seasonal-card {
+    transition: all 0.3s ease-out;
+  }
+
+  .seasonal-card:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 25px -8px rgba(255, 107, 43, 0.25);
+  }
+}

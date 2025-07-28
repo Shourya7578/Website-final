@@ -1,0 +1,40 @@
+# Robots.txt for Scandalous Foods
+# https://scandalousfoods.in/robots.txt
+
+User-agent: *
+Allow: /
+
+# Important pages
+Allow: /images/
+Allow: /favicon.png
+Allow: /#products
+Allow: /#about
+Allow: /#clientele
+Allow: /#production
+Allow: /#press
+Allow: /#contact
+
+# Restrict admin areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /scripts/
+
+# Sitemap location
+Sitemap: https://scandalousfoods.in/sitemap.xml
+
+# Crawl delay (optional - be respectful to search engines)
+Crawl-delay: 1
+
+# Specific instructions for major search engines
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: Slurp
+Allow: /
+Crawl-delay: 2
