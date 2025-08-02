@@ -80,7 +80,7 @@ export function ContactSection() {
     setErrorMessage("")
 
     try {
-      // Submit to Formspree for lead tracking
+      // Submit directly to Formspree
       const formspreeResponse = await fetch("https://formspree.io/f/mnnzbvbj", {
         method: "POST",
         headers: {
@@ -101,53 +101,31 @@ export function ContactSection() {
       })
 
       if (formspreeResponse.ok) {
-        console.log("Lead successfully tracked in Formspree")
+        console.log("Lead successfully submitted to Formspree")
+
+        // Show success
+        setSubmitStatus("success")
+        setShowThankYouModal(true)
+
+        // Reset form
+        setFormData({
+          name: "",
+          restaurantName: "",
+          designation: "",
+          location: "",
+          contactNumber: "",
+          email: "",
+          message: "",
+        })
+        setContactNumberError("")
+      } else {
+        throw new Error("Failed to submit form")
       }
-
-      // Create email body with all form data (backup system)
-      const emailBody = `New Partnership Inquiry - Scandalous Foods
-
-Name: ${formData.name}
-Restaurant Name: ${formData.restaurantName}
-Designation: ${formData.designation}
-Location: ${formData.location}
-Email: ${formData.email}
-Contact Number: ${formData.contactNumber}
-Message: ${formData.message}
-
-Submitted on: ${new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}
-
----
-This inquiry was submitted through the Scandalous Foods website contact form.
-Lead ID: ${Date.now()} (for tracking purposes)`
-
-      const subject = encodeURIComponent("Partnership Inquiry - Scandalous Foods")
-      const body = encodeURIComponent(emailBody)
-      const mailtoLink = `mailto:sales@scandalousfoods.in?subject=${subject}&body=${body}`
-
-      // Open email client
-      window.open(mailtoLink, "_self")
-
-      // Show success
-      setSubmitStatus("success")
-      setShowThankYouModal(true)
-
-      // Reset form
-      setFormData({
-        name: "",
-        restaurantName: "",
-        designation: "",
-        location: "",
-        contactNumber: "",
-        email: "",
-        message: "",
-      })
-      setContactNumberError("")
     } catch (error) {
       console.error("Form submission error:", error)
       setSubmitStatus("error")
       setErrorMessage(
-        "There was an error submitting your inquiry. Please contact us directly at sales@scandalousfoods.in",
+        "There was an error submitting your inquiry. Please try again or contact us directly at sales@scandalousfoods.in",
       )
     } finally {
       setIsSubmitting(false)
@@ -287,7 +265,7 @@ Lead ID: ${Date.now()} (for tracking purposes)`
                 {isSubmitting ? (
                   <>
                     <Loader2 className="animate-spin -ml-1 mr-3 h-5 w-5" />
-                    Opening Email Client...
+                    Submitting...
                   </>
                 ) : (
                   "Partner With Us"
@@ -318,19 +296,20 @@ Lead ID: ${Date.now()} (for tracking purposes)`
                 <CheckCircle className="w-8 h-8 text-green-600" />
               </div>
 
-              <h2 className="text-2xl font-bold text-[#1D1D1D] font-['Poppins'] mb-4">Email Client Opened!</h2>
+              <h2 className="text-2xl font-bold text-[#1D1D1D] font-['Poppins'] mb-4">Thank You!</h2>
 
               <p className="text-[#1D1D1D] font-['Open_Sans'] mb-6 leading-relaxed">
-                Your email client should now be open with a pre-filled message. Simply click{" "}
-                <span className="font-semibold text-[#FF6B2B]">Send</span> to submit your inquiry.
+                Your partnership inquiry has been successfully submitted. We're excited to explore how we can work
+                together!
               </p>
 
               <div className="bg-[#FFF5EB] rounded-lg p-4 mb-6">
                 <p className="text-sm text-[#1D1D1D] font-['Open_Sans']">
-                  <strong>What's next?</strong>
+                  <strong>What happens next?</strong>
                   <br />✅ Your inquiry has been recorded in our system
-                  <br />✅ Our team will review and respond within 24 hours
-                  <br />✅ We'll provide customized solutions for your business
+                  <br />✅ Our team will review your details within 24 hours
+                  <br />✅ We'll contact you with customized solutions for your business
+                  <br />✅ Schedule a call to discuss partnership opportunities
                 </p>
               </div>
 
