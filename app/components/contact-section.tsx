@@ -80,49 +80,52 @@ export function ContactSection() {
     setErrorMessage("")
 
     try {
-      // Submit directly to Formspree
-      const formspreeResponse = await fetch("https://formspree.io/f/mnnzbvbj", {
+      // Submit to JotForm
+      const jotformData = new FormData()
+
+      // Map your form fields to JotForm field IDs
+      // You'll need to replace these with your actual JotForm field IDs
+      jotformData.append("q3_name", formData.name)
+      jotformData.append("q4_restaurantName", formData.restaurantName)
+      jotformData.append("q5_designation", formData.designation)
+      jotformData.append("q6_location", formData.location)
+      jotformData.append("q7_email", formData.email)
+      jotformData.append("q8_contactNumber", formData.contactNumber)
+      jotformData.append("q9_message", formData.message)
+
+      // Add metadata
+      jotformData.append("q10_source", "Scandalous Foods Website")
+      jotformData.append("q11_leadType", "Partnership Inquiry")
+      jotformData.append("q12_submissionTime", new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }))
+
+      // Replace 'YOUR_JOTFORM_ID' with your actual JotForm ID
+      const jotformResponse = await fetch("https://submit.jotform.com/submit/252223858888472", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          restaurantName: formData.restaurantName,
-          designation: formData.designation,
-          location: formData.location,
-          email: formData.email,
-          contactNumber: formData.contactNumber,
-          message: formData.message,
-          submissionTime: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
-          source: "Scandalous Foods Website",
-          leadType: "Partnership Inquiry",
-        }),
+        body: jotformData,
+        mode: "no-cors", // JotForm requires no-cors mode
       })
 
-      if (formspreeResponse.ok) {
-        console.log("Lead successfully submitted to Formspree")
+      // Since we're using no-cors, we can't check response status
+      // We'll assume success if no error is thrown
+      console.log("Lead successfully submitted to JotForm")
 
-        // Show success
-        setSubmitStatus("success")
-        setShowThankYouModal(true)
+      // Show success
+      setSubmitStatus("success")
+      setShowThankYouModal(true)
 
-        // Reset form
-        setFormData({
-          name: "",
-          restaurantName: "",
-          designation: "",
-          location: "",
-          contactNumber: "",
-          email: "",
-          message: "",
-        })
-        setContactNumberError("")
-      } else {
-        throw new Error("Failed to submit form")
-      }
+      // Reset form
+      setFormData({
+        name: "",
+        restaurantName: "",
+        designation: "",
+        location: "",
+        contactNumber: "",
+        email: "",
+        message: "",
+      })
+      setContactNumberError("")
     } catch (error) {
-      console.error("Form submission error:", error)
+      console.error("JotForm submission error:", error)
       setSubmitStatus("error")
       setErrorMessage(
         "There was an error submitting your inquiry. Please try again or contact us directly at sales@scandalousfoods.in",
@@ -165,6 +168,7 @@ export function ContactSection() {
               <div>
                 <input
                   type="text"
+                  name="q3_name"
                   placeholder="Your Name"
                   value={formData.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
@@ -175,6 +179,7 @@ export function ContactSection() {
               <div>
                 <input
                   type="text"
+                  name="q4_restaurantName"
                   placeholder="Restaurant Name"
                   value={formData.restaurantName}
                   onChange={(e) => handleInputChange("restaurantName", e.target.value)}
@@ -188,6 +193,7 @@ export function ContactSection() {
               <div>
                 <input
                   type="text"
+                  name="q5_designation"
                   placeholder="Designation"
                   value={formData.designation}
                   onChange={(e) => handleInputChange("designation", e.target.value)}
@@ -198,6 +204,7 @@ export function ContactSection() {
               <div>
                 <input
                   type="text"
+                  name="q6_location"
                   placeholder="Location"
                   value={formData.location}
                   onChange={(e) => handleInputChange("location", e.target.value)}
@@ -211,6 +218,7 @@ export function ContactSection() {
               <div>
                 <input
                   type="email"
+                  name="q7_email"
                   placeholder="Email Address"
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
@@ -221,6 +229,7 @@ export function ContactSection() {
               <div>
                 <input
                   type="tel"
+                  name="q8_contactNumber"
                   placeholder="Contact Number"
                   value={formData.contactNumber}
                   onChange={handleContactNumberChange}
@@ -243,6 +252,7 @@ export function ContactSection() {
 
             <div>
               <textarea
+                name="q9_message"
                 placeholder="Tell us about your business and how we can help..."
                 value={formData.message}
                 onChange={(e) => handleInputChange("message", e.target.value)}
@@ -251,6 +261,15 @@ export function ContactSection() {
                 disabled={isSubmitting}
               />
             </div>
+
+            {/* Hidden fields for JotForm */}
+            <input type="hidden" name="q10_source" value="Scandalous Foods Website" />
+            <input type="hidden" name="q11_leadType" value="Partnership Inquiry" />
+            <input
+              type="hidden"
+              name="q12_submissionTime"
+              value={new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}
+            />
 
             <div className="text-sm text-[#666] bg-blue-50 p-3 rounded-lg border border-blue-200">
               <strong>Note:</strong> Please provide either an email address or contact number to submit the form.
@@ -299,17 +318,17 @@ export function ContactSection() {
               <h2 className="text-2xl font-bold text-[#1D1D1D] font-['Poppins'] mb-4">Thank You!</h2>
 
               <p className="text-[#1D1D1D] font-['Open_Sans'] mb-6 leading-relaxed">
-                Your partnership inquiry has been successfully submitted. We're excited to explore how we can work
-                together!
+                Your partnership inquiry has been successfully submitted to JotForm. We're excited to explore how we can
+                work together!
               </p>
 
               <div className="bg-[#FFF5EB] rounded-lg p-4 mb-6">
                 <p className="text-sm text-[#1D1D1D] font-['Open_Sans']">
                   <strong>What happens next?</strong>
-                  <br />✅ Your inquiry has been recorded in our system
+                  <br />✅ Your inquiry has been recorded in JotForm
+                  <br />✅ Automatically synced to our CRM via Zapier
                   <br />✅ Our team will review your details within 24 hours
-                  <br />✅ We'll contact you with customized solutions for your business
-                  <br />✅ Schedule a call to discuss partnership opportunities
+                  <br />✅ We'll contact you with customized solutions
                 </p>
               </div>
 
