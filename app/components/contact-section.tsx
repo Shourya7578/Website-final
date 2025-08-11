@@ -80,56 +80,68 @@ export function ContactSection() {
     setErrorMessage("")
 
     try {
-      // Submit to JotForm
-      const jotformData = new FormData()
+      // Submit to NEW Formspree form ID: myzplrkr
+      const formspreeData = new FormData()
+      formspreeData.append("name", formData.name)
+      formspreeData.append("restaurant_name", formData.restaurantName)
+      formspreeData.append("designation", formData.designation)
+      formspreeData.append("location", formData.location)
+      formspreeData.append("email", formData.email)
+      formspreeData.append("contact_number", formData.contactNumber)
+      formspreeData.append("message", formData.message)
+      formspreeData.append("lead_source", "Scandalous Foods Website")
+      formspreeData.append("lead_type", "Partnership Inquiry")
 
-      // Map your form fields to JotForm field IDs
-      // You'll need to replace these with your actual JotForm field IDs
-      jotformData.append("q3_name", formData.name)
-      jotformData.append("q4_restaurantName", formData.restaurantName)
-      jotformData.append("q5_designation", formData.designation)
-      jotformData.append("q6_location", formData.location)
-      jotformData.append("q7_email", formData.email)
-      jotformData.append("q8_contactNumber", formData.contactNumber)
-      jotformData.append("q9_message", formData.message)
-
-      // Add metadata
-      jotformData.append("q10_source", "Scandalous Foods Website")
-      jotformData.append("q11_leadType", "Partnership Inquiry")
-      jotformData.append("q12_submissionTime", new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }))
-
-      // Replace 'YOUR_JOTFORM_ID' with your actual JotForm ID
-      const jotformResponse = await fetch("https://submit.jotform.com/submit/252223858888472", {
+      const formspreeResponse = await fetch("https://formspree.io/f/myzplrkr", {
         method: "POST",
-        body: jotformData,
-        mode: "no-cors", // JotForm requires no-cors mode
+        body: formspreeData,
+        headers: {
+          Accept: "application/json",
+        },
       })
 
-      // Since we're using no-cors, we can't check response status
-      // We'll assume success if no error is thrown
-      console.log("Lead successfully submitted to JotForm")
+      const responseData = await formspreeResponse.json()
 
-      // Show success
-      setSubmitStatus("success")
-      setShowThankYouModal(true)
+      if (formspreeResponse.ok) {
+        console.log("Lead successfully submitted to Formspree:", responseData)
+        setSubmitStatus("success")
+        setShowThankYouModal(true)
 
-      // Reset form
-      setFormData({
-        name: "",
-        restaurantName: "",
-        designation: "",
-        location: "",
-        contactNumber: "",
-        email: "",
-        message: "",
-      })
-      setContactNumberError("")
+        // Reset form
+        setFormData({
+          name: "",
+          restaurantName: "",
+          designation: "",
+          location: "",
+          contactNumber: "",
+          email: "",
+          message: "",
+        })
+        setContactNumberError("")
+      } else {
+        // Handle Formspree validation errors
+        console.error("Formspree validation error:", responseData)
+
+        if (responseData.errors) {
+          const errorMessages = responseData.errors.map((error: any) => error.message).join(", ")
+          setErrorMessage(`Form validation error: ${errorMessages}`)
+        } else {
+          setErrorMessage("There was an error with the form submission. Please check your information and try again.")
+        }
+        setSubmitStatus("error")
+      }
     } catch (error) {
-      console.error("JotForm submission error:", error)
+      console.error("Network or submission error:", error)
+
+      // Check if it's a network error
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        setErrorMessage("Network error. Please check your internet connection and try again.")
+      } else {
+        setErrorMessage(
+          "There was an error submitting your inquiry. Please try again or contact us directly at sales@scandalousfoods.in",
+        )
+      }
       setSubmitStatus("error")
-      setErrorMessage(
-        "There was an error submitting your inquiry. Please try again or contact us directly at sales@scandalousfoods.in",
-      )
     } finally {
       setIsSubmitting(false)
     }
@@ -168,7 +180,6 @@ export function ContactSection() {
               <div>
                 <input
                   type="text"
-                  name="q3_name"
                   placeholder="Your Name"
                   value={formData.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
@@ -179,7 +190,6 @@ export function ContactSection() {
               <div>
                 <input
                   type="text"
-                  name="q4_restaurantName"
                   placeholder="Restaurant Name"
                   value={formData.restaurantName}
                   onChange={(e) => handleInputChange("restaurantName", e.target.value)}
@@ -193,7 +203,6 @@ export function ContactSection() {
               <div>
                 <input
                   type="text"
-                  name="q5_designation"
                   placeholder="Designation"
                   value={formData.designation}
                   onChange={(e) => handleInputChange("designation", e.target.value)}
@@ -204,7 +213,6 @@ export function ContactSection() {
               <div>
                 <input
                   type="text"
-                  name="q6_location"
                   placeholder="Location"
                   value={formData.location}
                   onChange={(e) => handleInputChange("location", e.target.value)}
@@ -218,7 +226,6 @@ export function ContactSection() {
               <div>
                 <input
                   type="email"
-                  name="q7_email"
                   placeholder="Email Address"
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
@@ -229,30 +236,35 @@ export function ContactSection() {
               <div>
                 <input
                   type="tel"
-                  name="q8_contactNumber"
-                  placeholder="Contact Number"
+                  placeholder="Contact Number (10 digits)"
                   value={formData.contactNumber}
                   onChange={handleContactNumberChange}
                   className={`w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors duration-200 ${
                     contactNumberError
-                      ? "border-red-300 focus:border-red-500"
+                      ? "border-red-300 focus:border-red-500 bg-red-50"
                       : formData.contactNumber.trim() && isContactValid
-                        ? "border-green-300 focus:border-green-500"
-                        : "border-[#E6E6E6] focus:border-[#FF6B2B]"
+                        ? "border-green-300 focus:border-green-500 bg-green-50"
+                        : "border-[#E6E6E6] focus:border-[#FF6B2B] bg-white"
                   }`}
                   disabled={isSubmitting}
                   maxLength={10}
+                  style={{ display: "block", visibility: "visible" }}
                 />
-                {contactNumberError && <p className="text-red-500 text-xs mt-1">{contactNumberError}</p>}
+                {contactNumberError && <p className="text-red-500 text-xs mt-1 font-medium">{contactNumberError}</p>}
                 {!contactNumberError && formData.contactNumber.trim() && isContactValid && (
-                  <p className="text-green-600 text-xs mt-1">✓ Valid contact number</p>
+                  <p className="text-green-600 text-xs mt-1 font-medium">✓ Valid 10-digit number</p>
                 )}
+                {formData.contactNumber.trim() &&
+                  formData.contactNumber.length > 0 &&
+                  formData.contactNumber.length < 10 &&
+                  !contactNumberError && (
+                    <p className="text-blue-500 text-xs mt-1">Enter {10 - formData.contactNumber.length} more digits</p>
+                  )}
               </div>
             </div>
 
             <div>
               <textarea
-                name="q9_message"
                 placeholder="Tell us about your business and how we can help..."
                 value={formData.message}
                 onChange={(e) => handleInputChange("message", e.target.value)}
@@ -262,17 +274,13 @@ export function ContactSection() {
               />
             </div>
 
-            {/* Hidden fields for JotForm */}
-            <input type="hidden" name="q10_source" value="Scandalous Foods Website" />
-            <input type="hidden" name="q11_leadType" value="Partnership Inquiry" />
-            <input
-              type="hidden"
-              name="q12_submissionTime"
-              value={new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}
-            />
-
-            <div className="text-sm text-[#666] bg-blue-50 p-3 rounded-lg border border-blue-200">
-              <strong>Note:</strong> Please provide either an email address or contact number to submit the form.
+            <div className="text-sm text-[#666] bg-blue-50 p-4 rounded-lg border border-blue-200">
+              <strong>Required:</strong> Please provide either an email address OR a 10-digit contact number to submit
+              the form.
+              <br />
+              <span className="text-xs mt-1 block">
+                Both fields are optional, but at least one is required for us to contact you.
+              </span>
             </div>
 
             <div className="text-center">
@@ -295,7 +303,7 @@ export function ContactSection() {
         </div>
       </div>
 
-      {/* Thank You Modal */}
+      {/* Simplified Thank You Modal */}
       {showThankYouModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
@@ -311,48 +319,21 @@ export function ContactSection() {
             </button>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <CheckCircle className="w-8 h-8 text-green-600" />
               </div>
 
-              <h2 className="text-2xl font-bold text-[#1D1D1D] font-['Poppins'] mb-4">Thank You!</h2>
+              <h2 className="text-2xl font-bold text-[#1D1D1D] font-['Poppins'] mb-6">Thank You!</h2>
 
-              <p className="text-[#1D1D1D] font-['Open_Sans'] mb-6 leading-relaxed">
-                Your partnership inquiry has been successfully submitted to JotForm. We're excited to explore how we can
-                work together!
+              <p className="text-lg text-[#1D1D1D] font-['Open_Sans'] mb-8 leading-relaxed">
+                Thanks for your request. Our team will get back in touch with you.
               </p>
-
-              <div className="bg-[#FFF5EB] rounded-lg p-4 mb-6">
-                <p className="text-sm text-[#1D1D1D] font-['Open_Sans']">
-                  <strong>What happens next?</strong>
-                  <br />✅ Your inquiry has been recorded in JotForm
-                  <br />✅ Automatically synced to our CRM via Zapier
-                  <br />✅ Our team will review your details within 24 hours
-                  <br />✅ We'll contact you with customized solutions
-                </p>
-              </div>
-
-              <div className="text-sm text-gray-600 mb-4">
-                <p>
-                  <strong>Need immediate assistance?</strong>
-                  <br />
-                  Call us at{" "}
-                  <a href="tel:+918657272865" className="text-[#FF6B2B] font-semibold">
-                    +91 8657272865
-                  </a>
-                  <br />
-                  Email:{" "}
-                  <a href="mailto:sales@scandalousfoods.in" className="text-[#FF6B2B] font-semibold">
-                    sales@scandalousfoods.in
-                  </a>
-                </p>
-              </div>
 
               <button
                 onClick={() => setShowThankYouModal(false)}
                 className="bg-[#FF6B2B] text-white px-8 py-3 rounded-full font-semibold hover:bg-[#e55a24] transition-colors duration-200 shadow-md hover:shadow-lg"
               >
-                Continue Exploring
+                Close
               </button>
             </div>
           </div>
