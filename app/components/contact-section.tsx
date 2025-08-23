@@ -21,8 +21,8 @@ export function ContactSection() {
   const [contactNumberError, setContactNumberError] = useState("")
   const [errorMessage, setErrorMessage] = useState("")
 
-  // Replace the Google Form configuration with Formspree
-  const FORMSPREE_ENDPOINT = "https://formspree.io/f/xdkogkpv" // Your Formspree form ID
+  // Formspree endpoint
+  const FORMSPREE_ENDPOINT = "https://formspree.io/f/xdkogkpv"
 
   const handleInputChange = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value })
@@ -123,42 +123,10 @@ export function ContactSection() {
       }
     } catch (error) {
       console.error("Submission error:", error)
-
-      // Fallback: Open email client with form data
-      const subject = encodeURIComponent("Partnership Inquiry - Scandalous Foods")
-      const body = encodeURIComponent(`
-Name: ${formData.name}
-Restaurant Name: ${formData.restaurantName}
-Designation: ${formData.designation}
-Location: ${formData.location}
-Contact Number: ${formData.contactNumber}
-Email: ${formData.email}
-
-Message:
-${formData.message}
-
-Submitted via website contact form.
-    `)
-
-      window.location.href = `mailto:sales@scandalousfoods.in?subject=${subject}&body=${body}`
-
       setErrorMessage(
-        "Form submitted via email backup. Please check your email client or contact us directly at sales@scandalousfoods.in",
+        "There was an error submitting your inquiry. Please try again or contact us directly at sales@scandalousfoods.in",
       )
-      setSubmitStatus("success")
-      setShowThankYouModal(true)
-
-      // Reset form
-      setFormData({
-        name: "",
-        restaurantName: "",
-        designation: "",
-        location: "",
-        contactNumber: "",
-        email: "",
-        message: "",
-      })
-      setContactNumberError("")
+      setSubmitStatus("error")
     } finally {
       setIsSubmitting(false)
     }
