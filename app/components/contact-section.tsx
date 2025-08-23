@@ -22,7 +22,7 @@ export function ContactSection() {
   const [errorMessage, setErrorMessage] = useState("")
 
   // Formspree endpoint
-  const FORMSPREE_ENDPOINT = "https://formspree.io/f/xdkogkpv"
+  const FORMSPREE_ENDPOINT = "https://formspree.io/f/myzplrkr"
 
   const handleInputChange = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value })
@@ -300,8 +300,7 @@ export function ContactSection() {
               <h2 className="text-2xl font-bold text-[#1D1D1D] font-['Poppins'] mb-6">Thank You!</h2>
 
               <p className="text-lg text-[#1D1D1D] font-['Open_Sans'] mb-8 leading-relaxed">
-                Thank you for your interest in partnering with Scandalous Foods. Our team will get back in touch with
-                you within 24 hours to discuss how we can help transform your dessert menu.
+                Thanks for your request. Our team will get back in touch with you.
               </p>
 
               <button
