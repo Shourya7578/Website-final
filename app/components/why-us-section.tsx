@@ -41,20 +41,22 @@ const features = [
 
 export function WhyUsSection() {
   return (
-    <section id="why-us" className="py-20 px-4 sm:px-6 lg:px-8">
+    <section id="why-us" className="py-20 px-4 sm:px-6 lg:px-8" itemScope itemType="https://schema.org/ItemList">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
+        <header className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1D1D1D] font-['Poppins'] mb-4">
             Why Choose <span className="text-[#2563EB] italic font-['Playfair_Display']">Scandalous Foods?</span>
           </h2>
-        </div>
+        </header>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
           {features.map((feature, index) => (
-            <div
+            <article
               key={feature.title}
               className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 text-center"
               style={{ animationDelay: `${index * 100}ms` }}
+              itemScope
+              itemType="https://schema.org/Service"
             >
               <div className="flex justify-center mb-4">
                 <div
@@ -70,6 +72,7 @@ export function WhyUsSection() {
                       className="w-10 h-10 object-contain filter brightness-0 invert opacity-100"
                       crossOrigin="anonymous"
                       priority
+                      loading="lazy"
                     />
                   ) : (
                     <feature.icon className="w-8 h-8 text-white" />
@@ -77,10 +80,14 @@ export function WhyUsSection() {
                 </div>
               </div>
               <div>
-                <h3 className="text-lg font-bold text-[#1D1D1D] font-['Poppins'] mb-2">{feature.title}</h3>
-                <p className="text-[#1D1D1D] font-['Open_Sans'] text-sm">{feature.description}</p>
+                <h3 className="text-lg font-bold text-[#1D1D1D] font-['Poppins'] mb-2" itemProp="name">
+                  {feature.title}
+                </h3>
+                <p className="text-[#1D1D1D] font-['Open_Sans'] text-sm" itemProp="description">
+                  {feature.description}
+                </p>
               </div>
-            </div>
+            </article>
           ))}
         </div>
       </div>

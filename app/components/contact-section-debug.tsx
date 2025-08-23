@@ -4,7 +4,7 @@ import type React from "react"
 import { useState } from "react"
 import { CheckCircle, X, Loader2 } from "lucide-react"
 
-export function ContactSection() {
+export function ContactSectionDebug() {
   const [formData, setFormData] = useState({
     name: "",
     restaurantName: "",
@@ -20,9 +20,22 @@ export function ContactSection() {
   const [showThankYouModal, setShowThankYouModal] = useState(false)
   const [contactNumberError, setContactNumberError] = useState("")
   const [errorMessage, setErrorMessage] = useState("")
+  const [debugInfo, setDebugInfo] = useState("")
 
-  // Replace the Google Form configuration with Formspree
-  const FORMSPREE_ENDPOINT = "https://formspree.io/f/xdkogkpv" // Your Formspree form ID
+  // Your actual Google Form configuration
+  const GOOGLE_FORM_ACTION =
+    "https://docs.google.com/forms/d/e/1FAIpQLSenckW5me1StAROhe0VSEgcMH3Y0XVEYETbbdZPVrFSHxCBeQ/formResponse"
+
+  // Let's try different common entry ID patterns
+  const GOOGLE_FORM_FIELDS = {
+    name: "entry.1234567890", // Try common patterns
+    restaurantName: "entry.1234567891",
+    designation: "entry.1234567892",
+    location: "entry.1234567893",
+    contactNumber: "entry.1234567894",
+    email: "entry.1234567895",
+    message: "entry.1234567896",
+  }
 
   const handleInputChange = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value })
@@ -82,69 +95,35 @@ export function ContactSection() {
     setErrorMessage("")
 
     try {
-      // Submit to Formspree
-      const response = await fetch(FORMSPREE_ENDPOINT, {
+      // Create debug info
+      const debugData = {
+        formAction: GOOGLE_FORM_ACTION,
+        fields: GOOGLE_FORM_FIELDS,
+        data: formData,
+        timestamp: new Date().toISOString(),
+      }
+      setDebugInfo(JSON.stringify(debugData, null, 2))
+
+      // Submit to Google Forms
+      const googleFormData = new FormData()
+      googleFormData.append(GOOGLE_FORM_FIELDS.name, formData.name)
+      googleFormData.append(GOOGLE_FORM_FIELDS.restaurantName, formData.restaurantName)
+      googleFormData.append(GOOGLE_FORM_FIELDS.designation, formData.designation)
+      googleFormData.append(GOOGLE_FORM_FIELDS.location, formData.location)
+      googleFormData.append(GOOGLE_FORM_FIELDS.contactNumber, formData.contactNumber)
+      googleFormData.append(GOOGLE_FORM_FIELDS.email, formData.email)
+      googleFormData.append(GOOGLE_FORM_FIELDS.message, formData.message)
+
+      // Submit to Google Forms (no-cors mode to avoid CORS issues)
+      const response = await fetch(GOOGLE_FORM_ACTION, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          restaurant_name: formData.restaurantName,
-          designation: formData.designation,
-          location: formData.location,
-          contact_number: formData.contactNumber,
-          email: formData.email,
-          message: formData.message,
-          lead_source: "Website Contact Form",
-          lead_type: "Partnership Inquiry",
-          submission_time: new Date().toISOString(),
-        }),
+        mode: "no-cors",
+        body: googleFormData,
       })
 
-      if (response.ok) {
-        console.log("Lead successfully submitted to Formspree")
-        setSubmitStatus("success")
-        setShowThankYouModal(true)
+      console.log("Form submission response:", response)
 
-        // Reset form
-        setFormData({
-          name: "",
-          restaurantName: "",
-          designation: "",
-          location: "",
-          contactNumber: "",
-          email: "",
-          message: "",
-        })
-        setContactNumberError("")
-      } else {
-        throw new Error("Formspree submission failed")
-      }
-    } catch (error) {
-      console.error("Submission error:", error)
-
-      // Fallback: Open email client with form data
-      const subject = encodeURIComponent("Partnership Inquiry - Scandalous Foods")
-      const body = encodeURIComponent(`
-Name: ${formData.name}
-Restaurant Name: ${formData.restaurantName}
-Designation: ${formData.designation}
-Location: ${formData.location}
-Contact Number: ${formData.contactNumber}
-Email: ${formData.email}
-
-Message:
-${formData.message}
-
-Submitted via website contact form.
-    `)
-
-      window.location.href = `mailto:sales@scandalousfoods.in?subject=${subject}&body=${body}`
-
-      setErrorMessage(
-        "Form submitted via email backup. Please check your email client or contact us directly at sales@scandalousfoods.in",
-      )
+      // Show success (even though we can't read the response due to no-cors)
       setSubmitStatus("success")
       setShowThankYouModal(true)
 
@@ -159,6 +138,10 @@ Submitted via website contact form.
         message: "",
       })
       setContactNumberError("")
+    } catch (error) {
+      console.error("Submission error:", error)
+      setErrorMessage("There was an error submitting your inquiry. Please try again.")
+      setSubmitStatus("error")
     } finally {
       setIsSubmitting(false)
     }
@@ -177,6 +160,18 @@ Submitted via website contact form.
             <span className="text-[#FF6B2B] italic font-['Playfair_Display']">Mithai Together</span>
           </h2>
         </div>
+
+        {/* Debug Info */}
+        {debugInfo && (
+          <div className="mb-8 p-4 bg-gray-100 rounded-lg">
+            <h3 className="font-bold mb-2">Debug Information:</h3>
+            <pre className="text-xs overflow-auto">{debugInfo}</pre>
+            <p className="text-sm mt-2 text-blue-600">
+              <strong>Next Step:</strong> Check your Google Form responses to see if data appeared. If not, we need to
+              find the correct entry IDs.
+            </p>
+          </div>
+        )}
 
         <div className="bg-[#FFF5EB] rounded-3xl p-8 shadow-xl">
           {submitStatus === "error" && (
@@ -335,6 +330,11 @@ Submitted via website contact form.
                 Thank you for your interest in partnering with Scandalous Foods. Our team will get back in touch with
                 you within 24 hours to discuss how we can help transform your dessert menu.
               </p>
+
+              <div className="text-sm text-gray-600 mb-4">
+                <strong>Next:</strong> Check your Google Form responses to see if the data appeared. If not, we need to
+                find the correct entry IDs.
+              </div>
 
               <button
                 onClick={() => setShowThankYouModal(false)}

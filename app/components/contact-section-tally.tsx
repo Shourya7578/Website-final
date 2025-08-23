@@ -21,9 +21,6 @@ export function ContactSection() {
   const [contactNumberError, setContactNumberError] = useState("")
   const [errorMessage, setErrorMessage] = useState("")
 
-  // Replace the Google Form configuration with Formspree
-  const FORMSPREE_ENDPOINT = "https://formspree.io/f/xdkogkpv" // Your Formspree form ID
-
   const handleInputChange = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value })
     if (submitStatus === "error") {
@@ -82,28 +79,24 @@ export function ContactSection() {
     setErrorMessage("")
 
     try {
-      // Submit to Formspree
-      const response = await fetch(FORMSPREE_ENDPOINT, {
+      // Submit to Tally Forms
+      // Replace 'YOUR_TALLY_FORM_ID' with your actual Tally form ID
+      const tallyFormData = new FormData()
+      tallyFormData.append("name", formData.name)
+      tallyFormData.append("restaurant_name", formData.restaurantName)
+      tallyFormData.append("designation", formData.designation)
+      tallyFormData.append("location", formData.location)
+      tallyFormData.append("email", formData.email)
+      tallyFormData.append("contact_number", formData.contactNumber)
+      tallyFormData.append("message", formData.message)
+
+      const tallyResponse = await fetch("https://tally.so/r/YOUR_TALLY_FORM_ID", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          restaurant_name: formData.restaurantName,
-          designation: formData.designation,
-          location: formData.location,
-          contact_number: formData.contactNumber,
-          email: formData.email,
-          message: formData.message,
-          lead_source: "Website Contact Form",
-          lead_type: "Partnership Inquiry",
-          submission_time: new Date().toISOString(),
-        }),
+        body: tallyFormData,
       })
 
-      if (response.ok) {
-        console.log("Lead successfully submitted to Formspree")
+      if (tallyResponse.ok) {
+        console.log("Lead successfully submitted to Tally")
         setSubmitStatus("success")
         setShowThankYouModal(true)
 
@@ -119,46 +112,14 @@ export function ContactSection() {
         })
         setContactNumberError("")
       } else {
-        throw new Error("Formspree submission failed")
+        throw new Error("Tally submission failed")
       }
     } catch (error) {
       console.error("Submission error:", error)
-
-      // Fallback: Open email client with form data
-      const subject = encodeURIComponent("Partnership Inquiry - Scandalous Foods")
-      const body = encodeURIComponent(`
-Name: ${formData.name}
-Restaurant Name: ${formData.restaurantName}
-Designation: ${formData.designation}
-Location: ${formData.location}
-Contact Number: ${formData.contactNumber}
-Email: ${formData.email}
-
-Message:
-${formData.message}
-
-Submitted via website contact form.
-    `)
-
-      window.location.href = `mailto:sales@scandalousfoods.in?subject=${subject}&body=${body}`
-
       setErrorMessage(
-        "Form submitted via email backup. Please check your email client or contact us directly at sales@scandalousfoods.in",
+        "There was an error submitting your inquiry. Please try again or contact us directly at sales@scandalousfoods.in",
       )
-      setSubmitStatus("success")
-      setShowThankYouModal(true)
-
-      // Reset form
-      setFormData({
-        name: "",
-        restaurantName: "",
-        designation: "",
-        location: "",
-        contactNumber: "",
-        email: "",
-        message: "",
-      })
-      setContactNumberError("")
+      setSubmitStatus("error")
     } finally {
       setIsSubmitting(false)
     }
@@ -332,8 +293,7 @@ Submitted via website contact form.
               <h2 className="text-2xl font-bold text-[#1D1D1D] font-['Poppins'] mb-6">Thank You!</h2>
 
               <p className="text-lg text-[#1D1D1D] font-['Open_Sans'] mb-8 leading-relaxed">
-                Thank you for your interest in partnering with Scandalous Foods. Our team will get back in touch with
-                you within 24 hours to discuss how we can help transform your dessert menu.
+                Thanks for your request. Our team will get back in touch with you.
               </p>
 
               <button

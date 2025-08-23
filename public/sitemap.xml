@@ -10,22 +10,22 @@
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://scandalousfoods.in/images/rasmalai.jpg</image:loc>
-      <image:caption>Traditional Ras Malai by Scandalous Foods</image:caption>
-      <image:title>Ras Malai - Traditional Indian Dessert</image:title>
+      <image:caption>Traditional Ras Malai - B2B Dessert Solutions by Scandalous Foods</image:caption>
+      <image:title>Ras Malai - B2B Indian Dessert Solutions</image:title>
     </image:image>
     <image:image>
       <image:loc>https://scandalousfoods.in/images/shahi-tukda-new.jpg</image:loc>
-      <image:caption>Shahi Tukda - Royal Indian Dessert</image:caption>
-      <image:title>Shahi Tukda - Traditional Mithai</image:title>
+      <image:caption>Shahi Tukda - Premium B2B Indian Mithai Solutions</image:caption>
+      <image:title>Shahi Tukda - B2B Dessert Solutions</image:title>
     </image:image>
     <image:image>
       <image:loc>https://scandalousfoods.in/images/gulabjamun.jpg</image:loc>
-      <image:caption>Gulab Jamun - Classic Indian Sweet</image:caption>
-      <image:title>Gulab Jamun - Traditional Mithai</image:title>
+      <image:caption>Gulab Jamun - Single-Serve B2B Indian Sweets</image:caption>
+      <image:title>Gulab Jamun - B2B Dessert Solutions</image:title>
     </image:image>
   </url>
 
-  <!-- Products Section -->
+  <!-- B2B Dessert Solutions Section -->
   <url>
     <loc>https://scandalousfoods.in/#products</loc>
     <lastmod>2024-01-15T00:00:00+00:00</lastmod>
@@ -33,7 +33,7 @@
     <priority>0.9</priority>
   </url>
 
-  <!-- About Section -->
+  <!-- About B2B Dessert Solutions -->
   <url>
     <loc>https://scandalousfoods.in/#about</loc>
     <lastmod>2024-01-15T00:00:00+00:00</lastmod>
@@ -41,7 +41,7 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- Clientele Section -->
+  <!-- B2B Clientele -->
   <url>
     <loc>https://scandalousfoods.in/#clientele</loc>
     <lastmod>2024-01-15T00:00:00+00:00</lastmod>
@@ -49,7 +49,7 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- Production Section -->
+  <!-- Production Facilities -->
   <url>
     <loc>https://scandalousfoods.in/#production</loc>
     <lastmod>2024-01-15T00:00:00+00:00</lastmod>
@@ -57,7 +57,7 @@
     <priority>0.7</priority>
   </url>
 
-  <!-- Press Section -->
+  <!-- Press Coverage -->
   <url>
     <loc>https://scandalousfoods.in/#press</loc>
     <lastmod>2024-01-15T00:00:00+00:00</lastmod>
@@ -65,7 +65,15 @@
     <priority>0.7</priority>
   </url>
 
-  <!-- Contact Section -->
+  <!-- Why Choose Our B2B Solutions -->
+  <url>
+    <loc>https://scandalousfoods.in/#why-us</loc>
+    <lastmod>2024-01-15T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Contact for B2B Solutions -->
   <url>
     <loc>https://scandalousfoods.in/#contact</loc>
     <lastmod>2024-01-15T00:00:00+00:00</lastmod>
@@ -73,12 +81,12 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- Admin Dashboard -->
+  <!-- Blog - B2B Dessert Solutions Guide -->
   <url>
-    <loc>https://scandalousfoods.in/admin</loc>
+    <loc>https://scandalousfoods.in/blog/traditional-mithai-guide</loc>
     <lastmod>2024-01-15T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
+    <priority>0.6</priority>
   </url>
 
 </urlset>

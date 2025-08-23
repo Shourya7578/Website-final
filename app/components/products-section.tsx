@@ -9,24 +9,28 @@ const products = [
     description: "Saffron milk dumplings | Plated beautifully",
     tagline: "Luxe flavors, zero prep.",
     image: "/images/rasmalai.jpg",
+    alt: "Traditional Ras Malai - Premium Indian dessert for restaurants",
   },
   {
     name: "Shahi Tukda",
     description: "Toasted rabri dessert",
     tagline: "Modern plating, royal nostalgia.",
     image: "/images/shahi-tukda-new.jpg",
+    alt: "Shahi Tukda - Royal Indian dessert for hotels",
   },
   {
     name: "Moong Dal Halwa",
     description: "Ghee-rich halwa in heatable pouch",
     tagline: "Winter warmth, simplified.",
     image: "/images/moong-dal-halwa.jpg",
+    alt: "Moong Dal Halwa - Ready-to-serve Indian dessert",
   },
   {
     name: "Gulab Jamun",
     description: "Soft & syrupy | Frozen single-serve",
     tagline: "Classic indulgence, always ready to serve.",
     image: "/images/gulabjamun.jpg",
+    alt: "Gulab Jamun - Single-serve Indian sweets",
   },
 ]
 
@@ -37,6 +41,7 @@ const seasonalProducts = [
     tagline: "Winter comfort in every bite.",
     season: "Winter Special",
     image: "/images/gajar-halwa.jpg",
+    alt: "Gajar Halwa - Seasonal Indian dessert",
   },
   {
     name: "Mawa Gujiya",
@@ -44,6 +49,7 @@ const seasonalProducts = [
     tagline: "Festival joy, perfectly crafted.",
     season: "Holi Special",
     image: "/images/mawa-gujiya-new.png",
+    alt: "Mawa Gujiya - Festival Indian mithai",
   },
   {
     name: "Sheer Kurma",
@@ -51,6 +57,7 @@ const seasonalProducts = [
     tagline: "Ramadan tradition, modernized.",
     season: "Ramadan Special",
     image: "/images/sheer-kurma-new.jpg",
+    alt: "Sheer Kurma - Ramadan special dessert",
   },
   {
     name: "Modak",
@@ -58,6 +65,7 @@ const seasonalProducts = [
     tagline: "Ganesh Chaturthi favorite.",
     season: "Festival Special",
     image: "/images/modak.jpeg",
+    alt: "Modak - Festival Indian sweets",
   },
   {
     name: "Mango Ras Malai",
@@ -65,6 +73,7 @@ const seasonalProducts = [
     tagline: "Tropical indulgence, quality assured.",
     season: "Summer Special",
     image: "/images/mango-ras-malai-new.webp",
+    alt: "Mango Ras Malai - Summer special dessert",
   },
 ]
 
@@ -74,18 +83,21 @@ const fusionDesserts = [
     description: "Traditional sweets meet ice cream",
     tagline: "The perfect fusion of hot and cold.",
     image: "/images/mithai-sundae.png",
+    alt: "Mithai Sundaes - Fusion Indian desserts",
   },
   {
     name: "Jalebi Rabdi",
     description: "Crispy jalebi with creamy rabdi",
     tagline: "Classic combination, modern presentation.",
     image: "/images/jalebi-rabdi.png",
+    alt: "Jalebi Rabdi - Fusion Indian desserts",
   },
   {
     name: "Mithai Jars",
     description: "Layered desserts in convenient jars",
     tagline: "Coming Soon",
     image: "/placeholder.svg?height=250&width=250",
+    alt: "Mithai Jars - Upcoming dessert innovation",
     comingSoon: true,
   },
 ]
@@ -145,9 +157,15 @@ export function ProductsSection() {
   }, [])
 
   return (
-    <section ref={sectionRef} id="products" className="py-20 px-4 sm:px-6 lg:px-8">
+    <section
+      ref={sectionRef}
+      id="products"
+      className="py-20 px-4 sm:px-6 lg:px-8"
+      itemScope
+      itemType="https://schema.org/ItemList"
+    >
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
+        <header className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1D1D1D] font-['Poppins'] mb-4">
             Crafted with Care -{" "}
             <span className="text-[#FF6B2B] italic font-['Playfair_Display']">Our Signature Desserts</span>
@@ -155,12 +173,12 @@ export function ProductsSection() {
           <p className="text-lg text-[#1D1D1D] font-['Open_Sans'] max-w-3xl mx-auto">
             Each dessert is a masterpiece of traditional flavors and modern presentation, ready to elevate your menu.
           </p>
-        </div>
+        </header>
 
         {/* Main Products */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-20">
           {products.map((product, index) => (
-            <div
+            <article
               key={product.name}
               className={`group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-700 overflow-hidden transform ${
                 visibleProducts.includes(index)
@@ -170,15 +188,18 @@ export function ProductsSection() {
               style={{
                 transitionDelay: visibleProducts.includes(index) ? "0ms" : `${index * 200}ms`,
               }}
+              itemScope
+              itemType="https://schema.org/Product"
             >
               <div className="relative overflow-hidden">
                 <Image
                   src={product.image || "/placeholder.svg"}
-                  alt={product.name}
+                  alt={product.alt}
                   width={400}
                   height={400}
                   className="w-full h-48 sm:h-64 object-cover group-hover:scale-110 transition-transform duration-500"
                   crossOrigin="anonymous"
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
@@ -191,10 +212,15 @@ export function ProductsSection() {
               </div>
 
               <div className="p-4 sm:p-6">
-                <h3 className="text-lg sm:text-xl font-bold text-[#1D1D1D] font-['Poppins'] mb-2 group-hover:text-[#FF6B2B] transition-colors duration-300">
+                <h3
+                  className="text-lg sm:text-xl font-bold text-[#1D1D1D] font-['Poppins'] mb-2 group-hover:text-[#FF6B2B] transition-colors duration-300"
+                  itemProp="name"
+                >
                   {product.name}
                 </h3>
-                <p className="text-[#22C55E] font-medium mb-2 sm:mb-3 text-sm">{product.description}</p>
+                <p className="text-[#22C55E] font-medium mb-2 sm:mb-3 text-sm" itemProp="description">
+                  {product.description}
+                </p>
                 <p className="text-[#1D1D1D] font-['Open_Sans'] text-sm leading-relaxed">{product.tagline}</p>
 
                 {/* Quality badge */}
@@ -205,24 +231,24 @@ export function ProductsSection() {
                   <div className="w-2 h-2 bg-[#FF6B2B] rounded-full animate-pulse"></div>
                 </div>
               </div>
-            </div>
+            </article>
           ))}
         </div>
 
         {/* Seasonal Products Section */}
-        <div className="border-t border-[#E6E6E6] pt-16 mb-20">
-          <div className="text-center mb-12">
+        <section className="border-t border-[#E6E6E6] pt-16 mb-20">
+          <header className="text-center mb-12">
             <h3 className="text-2xl sm:text-3xl font-bold text-[#1D1D1D] font-['Poppins'] mb-4">
               Seasonal <span className="text-[#FF6B2B] italic font-['Playfair_Display']">Specialties</span>
             </h3>
             <p className="text-lg text-[#1D1D1D] font-['Open_Sans'] max-w-2xl mx-auto">
               Limited-time offerings that celebrate festivals and seasons with authentic flavors.
             </p>
-          </div>
+          </header>
 
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6">
             {seasonalProducts.map((product, index) => (
-              <div
+              <article
                 key={product.name}
                 className={`group bg-[#FFF5EB] rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-600 overflow-hidden transform ${
                   visibleSeasonalProducts.includes(index)
@@ -232,15 +258,18 @@ export function ProductsSection() {
                 style={{
                   transitionDelay: visibleSeasonalProducts.includes(index) ? "0ms" : `${index * 150}ms`,
                 }}
+                itemScope
+                itemType="https://schema.org/Product"
               >
                 <div className="relative overflow-hidden">
                   <Image
                     src={product.image || "/placeholder.svg"}
-                    alt={product.name}
+                    alt={product.alt}
                     width={250}
                     height={250}
                     className="w-full h-32 sm:h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                     crossOrigin="anonymous"
+                    loading="lazy"
                   />
                   <div className="absolute top-2 sm:top-3 left-2 sm:left-3">
                     <span className="bg-[#FF6B2B] text-white px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-medium shadow-lg animate-bounce">
@@ -253,33 +282,39 @@ export function ProductsSection() {
                 </div>
 
                 <div className="p-3 sm:p-4">
-                  <h4 className="text-sm sm:text-lg font-bold text-[#1D1D1D] font-['Poppins'] mb-1 sm:mb-2 group-hover:text-[#FF6B2B] transition-colors duration-300 leading-tight">
+                  <h4
+                    className="text-sm sm:text-lg font-bold text-[#1D1D1D] font-['Poppins'] mb-1 sm:mb-2 group-hover:text-[#FF6B2B] transition-colors duration-300 leading-tight"
+                    itemProp="name"
+                  >
                     {product.name}
                   </h4>
-                  <p className="text-[#22C55E] font-medium mb-1 sm:mb-2 text-xs sm:text-sm leading-tight">
+                  <p
+                    className="text-[#22C55E] font-medium mb-1 sm:mb-2 text-xs sm:text-sm leading-tight"
+                    itemProp="description"
+                  >
                     {product.description}
                   </p>
                   <p className="text-[#1D1D1D] font-['Open_Sans'] text-xs leading-relaxed">{product.tagline}</p>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
-        </div>
+        </section>
 
         {/* Fusion Desserts Section */}
-        <div className="border-t border-[#E6E6E6] pt-16">
-          <div className="text-center mb-12">
+        <section className="border-t border-[#E6E6E6] pt-16">
+          <header className="text-center mb-12">
             <h3 className="text-2xl sm:text-3xl font-bold text-[#1D1D1D] font-['Poppins'] mb-4">
               Fusion <span className="text-[#2563EB] italic font-['Playfair_Display']">Desserts</span>
             </h3>
             <p className="text-lg text-[#1D1D1D] font-['Open_Sans'] max-w-2xl mx-auto">
               Modern twists on traditional favorites, perfect for contemporary dining experiences.
             </p>
-          </div>
+          </header>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {fusionDesserts.map((product, index) => (
-              <div
+              <article
                 key={product.name}
                 className={`group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-600 overflow-hidden transform ${
                   visibleFusionProducts.includes(index)
@@ -289,16 +324,19 @@ export function ProductsSection() {
                 style={{
                   transitionDelay: visibleFusionProducts.includes(index) ? "0ms" : `${index * 150}ms`,
                 }}
+                itemScope
+                itemType="https://schema.org/Product"
               >
                 <div className="relative overflow-hidden">
                   <Image
                     src={product.image || "/placeholder.svg"}
-                    alt={product.name}
+                    alt={product.alt}
                     width={400}
                     height={300}
                     className={`w-full h-48 sm:h-64 object-cover group-hover:scale-110 transition-transform duration-500 ${
                       product.comingSoon ? "filter grayscale" : ""
                     }`}
+                    loading="lazy"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
@@ -320,10 +358,15 @@ export function ProductsSection() {
                 </div>
 
                 <div className="p-4 sm:p-6">
-                  <h3 className="text-lg sm:text-xl font-bold text-[#1D1D1D] font-['Poppins'] mb-2 group-hover:text-[#2563EB] transition-colors duration-300">
+                  <h3
+                    className="text-lg sm:text-xl font-bold text-[#1D1D1D] font-['Poppins'] mb-2 group-hover:text-[#2563EB] transition-colors duration-300"
+                    itemProp="name"
+                  >
                     {product.name}
                   </h3>
-                  <p className="text-[#2563EB] font-medium mb-2 sm:mb-3 text-sm">{product.description}</p>
+                  <p className="text-[#2563EB] font-medium mb-2 sm:mb-3 text-sm" itemProp="description">
+                    {product.description}
+                  </p>
                   <p className="text-[#1D1D1D] font-['Open_Sans'] text-sm leading-relaxed">{product.tagline}</p>
 
                   {!product.comingSoon && (
@@ -335,10 +378,10 @@ export function ProductsSection() {
                     </div>
                   )}
                 </div>
-              </div>
+              </article>
             ))}
           </div>
-        </div>
+        </section>
       </div>
     </section>
   )

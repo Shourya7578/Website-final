@@ -4,7 +4,7 @@ import type React from "react"
 import { useState } from "react"
 import { CheckCircle, X, Loader2 } from "lucide-react"
 
-export function ContactSection() {
+export function ContactSectionTemp() {
   const [formData, setFormData] = useState({
     name: "",
     restaurantName: "",
@@ -21,8 +21,9 @@ export function ContactSection() {
   const [contactNumberError, setContactNumberError] = useState("")
   const [errorMessage, setErrorMessage] = useState("")
 
-  // Replace the Google Form configuration with Formspree
-  const FORMSPREE_ENDPOINT = "https://formspree.io/f/xdkogkpv" // Your Formspree form ID
+  // Temporary: Let's try a different approach - submit directly to your form
+  const GOOGLE_FORM_URL =
+    "https://docs.google.com/forms/d/e/1FAIpQLSenckW5me1StAROhe0VSEgcMH3Y0XVEYETbbdZPVrFSHxCBeQ/viewform"
 
   const handleInputChange = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value })
@@ -82,69 +83,24 @@ export function ContactSection() {
     setErrorMessage("")
 
     try {
-      // Submit to Formspree
-      const response = await fetch(FORMSPREE_ENDPOINT, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          restaurant_name: formData.restaurantName,
-          designation: formData.designation,
-          location: formData.location,
-          contact_number: formData.contactNumber,
-          email: formData.email,
-          message: formData.message,
-          lead_source: "Website Contact Form",
-          lead_type: "Partnership Inquiry",
-          submission_time: new Date().toISOString(),
-        }),
-      })
+      // For now, let's create a pre-filled Google Form URL
+      const params = new URLSearchParams()
 
-      if (response.ok) {
-        console.log("Lead successfully submitted to Formspree")
-        setSubmitStatus("success")
-        setShowThankYouModal(true)
+      // We'll use generic parameter names that might work
+      if (formData.name) params.append("entry.2005620554", formData.name)
+      if (formData.restaurantName) params.append("entry.1045781291", formData.restaurantName)
+      if (formData.designation) params.append("entry.1166974658", formData.designation)
+      if (formData.location) params.append("entry.839337160", formData.location)
+      if (formData.contactNumber) params.append("entry.1302056956", formData.contactNumber)
+      if (formData.email) params.append("entry.1065046570", formData.email)
+      if (formData.message) params.append("entry.1857563635", formData.message)
 
-        // Reset form
-        setFormData({
-          name: "",
-          restaurantName: "",
-          designation: "",
-          location: "",
-          contactNumber: "",
-          email: "",
-          message: "",
-        })
-        setContactNumberError("")
-      } else {
-        throw new Error("Formspree submission failed")
-      }
-    } catch (error) {
-      console.error("Submission error:", error)
+      const prefilledUrl = `${GOOGLE_FORM_URL}?${params.toString()}`
 
-      // Fallback: Open email client with form data
-      const subject = encodeURIComponent("Partnership Inquiry - Scandalous Foods")
-      const body = encodeURIComponent(`
-Name: ${formData.name}
-Restaurant Name: ${formData.restaurantName}
-Designation: ${formData.designation}
-Location: ${formData.location}
-Contact Number: ${formData.contactNumber}
-Email: ${formData.email}
+      // Open the pre-filled form in a new tab
+      window.open(prefilledUrl, "_blank")
 
-Message:
-${formData.message}
-
-Submitted via website contact form.
-    `)
-
-      window.location.href = `mailto:sales@scandalousfoods.in?subject=${subject}&body=${body}`
-
-      setErrorMessage(
-        "Form submitted via email backup. Please check your email client or contact us directly at sales@scandalousfoods.in",
-      )
+      // Show success
       setSubmitStatus("success")
       setShowThankYouModal(true)
 
@@ -159,6 +115,10 @@ Submitted via website contact form.
         message: "",
       })
       setContactNumberError("")
+    } catch (error) {
+      console.error("Submission error:", error)
+      setErrorMessage("There was an error submitting your inquiry. Please try again.")
+      setSubmitStatus("error")
     } finally {
       setIsSubmitting(false)
     }
@@ -191,6 +151,13 @@ Submitted via website contact form.
               </div>
             </div>
           )}
+
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-800">
+              <strong>Note:</strong> This will open a pre-filled Google Form in a new tab for you to submit. We're
+              working on finding the correct entry IDs for direct submission.
+            </p>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -298,7 +265,7 @@ Submitted via website contact form.
                 {isSubmitting ? (
                   <>
                     <Loader2 className="animate-spin -ml-1 mr-3 h-5 w-5" />
-                    Submitting...
+                    Opening Form...
                   </>
                 ) : (
                   "Partner With Us"
@@ -329,12 +296,15 @@ Submitted via website contact form.
                 <CheckCircle className="w-8 h-8 text-green-600" />
               </div>
 
-              <h2 className="text-2xl font-bold text-[#1D1D1D] font-['Poppins'] mb-6">Thank You!</h2>
+              <h2 className="text-2xl font-bold text-[#1D1D1D] font-['Poppins'] mb-6">Form Opened!</h2>
 
               <p className="text-lg text-[#1D1D1D] font-['Open_Sans'] mb-8 leading-relaxed">
-                Thank you for your interest in partnering with Scandalous Foods. Our team will get back in touch with
-                you within 24 hours to discuss how we can help transform your dessert menu.
+                A pre-filled Google Form has opened in a new tab. Please submit it there to complete your inquiry.
               </p>
+
+              <div className="text-sm text-blue-600 mb-4 p-3 bg-blue-50 rounded-lg">
+                <strong>Next:</strong> Help us find the entry IDs so we can make direct submission work!
+              </div>
 
               <button
                 onClick={() => setShowThankYouModal(false)}

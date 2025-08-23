@@ -1,13 +1,13 @@
 {
-  "name": "Scandalous Foods - Traditional Indian Mithai for Restaurants",
-  "short_name": "Scandalous Foods",
-  "description": "Transform your dessert menu with traditional Indian mithai. 6-month shelf life, preservative-free, trusted by 2200+ outlets across India.",
+  "name": "Scandalous Foods - B2B Dessert Solutions | Traditional Indian Mithai for Restaurants",
+  "short_name": "Scandalous Foods B2B",
+  "description": "Leading B2B dessert solutions provider in India. Transform your restaurant menu with traditional Indian mithai. 6-month shelf life, preservative-free, trusted by 2200+ outlets across India.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FFF5EB",
   "theme_color": "#FF6B2B",
   "orientation": "portrait-primary",
-  "categories": ["food", "business", "shopping"],
+  "categories": ["food", "business", "shopping", "b2b"],
   "lang": "en-IN",
   "dir": "ltr",
   "icons": [
@@ -30,14 +30,14 @@
       "sizes": "1280x720",
       "type": "image/jpeg",
       "platform": "wide",
-      "label": "Traditional Ras Malai - Scandalous Foods"
+      "label": "Traditional Ras Malai - B2B Dessert Solutions by Scandalous Foods"
     }
   ],
   "shortcuts": [
     {
-      "name": "Our Products",
-      "short_name": "Products",
-      "description": "View our traditional mithai collection",
+      "name": "B2B Dessert Solutions",
+      "short_name": "B2B Solutions",
+      "description": "View our B2B dessert solutions and traditional mithai collection",
       "url": "/#products",
       "icons": [
         {
@@ -47,9 +47,9 @@
       ]
     },
     {
-      "name": "Contact Us",
-      "short_name": "Contact",
-      "description": "Get in touch for partnership opportunities",
+      "name": "Contact for B2B Partnership",
+      "short_name": "B2B Contact",
+      "description": "Get in touch for B2B dessert solutions partnership opportunities",
       "url": "/#contact",
       "icons": [
         {
