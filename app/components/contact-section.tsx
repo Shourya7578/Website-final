@@ -131,29 +131,30 @@ export function ContactSection() {
       // Determine the final source value
       const finalSource = formData.howDidYouHear === "Other" ? formData.otherSource : formData.howDidYouHear
 
+      // Create FormData for Formspree
+      const formDataToSend = new FormData()
+      formDataToSend.append("name", formData.name)
+      formDataToSend.append("restaurant_name", formData.restaurantName)
+      formDataToSend.append("designation", formData.designation)
+      formDataToSend.append("location", formData.location)
+      formDataToSend.append("contact_number", formData.contactNumber)
+      formDataToSend.append("email", formData.email)
+      formDataToSend.append("message", formData.message)
+      formDataToSend.append("how_did_you_hear", finalSource)
+      formDataToSend.append("lead_source", "Website Contact Form")
+      formDataToSend.append("lead_type", "Partnership Inquiry")
+      formDataToSend.append("submission_time", new Date().toISOString())
+
       // Submit to Formspree
       const response = await fetch(FORMSPREE_ENDPOINT, {
         method: "POST",
+        body: formDataToSend,
         headers: {
-          "Content-Type": "application/json",
+          Accept: "application/json",
         },
-        body: JSON.stringify({
-          name: formData.name,
-          restaurant_name: formData.restaurantName,
-          designation: formData.designation,
-          location: formData.location,
-          contact_number: formData.contactNumber,
-          email: formData.email,
-          message: formData.message,
-          how_did_you_hear: finalSource,
-          lead_source: "Website Contact Form",
-          lead_type: "Partnership Inquiry",
-          submission_time: new Date().toISOString(),
-        }),
       })
 
       if (response.ok) {
-        console.log("Lead successfully submitted to Formspree")
         setSubmitStatus("success")
         setShowThankYouModal(true)
 
@@ -173,7 +174,7 @@ export function ContactSection() {
         setHowDidYouHearError("")
         setShowValidationMessage(false)
       } else {
-        throw new Error("Formspree submission failed")
+        throw new Error(`Formspree submission failed: ${response.status}`)
       }
     } catch (error) {
       console.error("Submission error:", error)
@@ -303,7 +304,9 @@ export function ContactSection() {
                 <select
                   value={formData.howDidYouHear}
                   onChange={(e) => handleInputChange("howDidYouHear", e.target.value)}
-                  className={`w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors duration-200 appearance-none bg-white cursor-pointer placeholder:text-gray-400 text-gray-400 ${
+                  className={`w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors duration-200 appearance-none bg-white cursor-pointer ${
+                    formData.howDidYouHear === "" ? "text-gray-400" : "text-gray-900"
+                  } ${
                     howDidYouHearError
                       ? "border-red-300 focus:border-red-500 bg-red-50"
                       : "border-[#E6E6E6] focus:border-[#FF6B2B]"
@@ -312,7 +315,12 @@ export function ContactSection() {
                   required
                 >
                   {hearAboutUsOptions.map((option) => (
-                    <option key={option.value} value={option.value} disabled={option.value === ""}>
+                    <option
+                      key={option.value}
+                      value={option.value}
+                      disabled={option.value === ""}
+                      className={option.value === "" ? "text-gray-400" : "text-gray-900"}
+                    >
                       {option.label}
                     </option>
                   ))}
