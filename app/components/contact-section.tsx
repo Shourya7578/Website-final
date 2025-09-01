@@ -81,7 +81,6 @@ export function ContactSection() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const hasEmail = formData.email.trim() !== ""
     const hasContact = formData.contactNumber.trim() !== ""
     const isContactValid = formData.contactNumber.trim() === "" || validateContactNumber(formData.contactNumber)
     const hasHowDidYouHear = formData.howDidYouHear.trim() !== ""
@@ -91,10 +90,10 @@ export function ContactSection() {
     setErrorMessage("")
     setHowDidYouHearError("")
 
-    // Validation - show validation message only when form is submitted with missing info
-    if (!hasEmail && !hasContact) {
+    // Validation - contact number is required
+    if (!hasContact) {
       setSubmitStatus("error")
-      setErrorMessage("Please provide either an email address or contact number to submit the form.")
+      setErrorMessage("Please provide a contact number to submit the form.")
       setShowValidationMessage(true)
       return
     }
@@ -188,7 +187,6 @@ export function ContactSection() {
     }
   }
 
-  const hasEmail = formData.email.trim() !== ""
   const hasContact = formData.contactNumber.trim() !== ""
   const isContactValid = formData.contactNumber.trim() === "" || validateContactNumber(formData.contactNumber)
   const hasHowDidYouHear = formData.howDidYouHear.trim() !== ""
@@ -279,7 +277,7 @@ export function ContactSection() {
               <div>
                 <input
                   type="tel"
-                  placeholder="Contact Number (10 digits)"
+                  placeholder="Contact Number (10 digits) *"
                   value={formData.contactNumber}
                   onChange={handleContactNumberChange}
                   className={`w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors duration-200 ${
@@ -363,8 +361,8 @@ export function ContactSection() {
             {/* Only show validation message when form is submitted with missing info */}
             {showValidationMessage && (
               <div className="text-sm text-[#666] bg-blue-50 p-4 rounded-lg border border-blue-200 animate-fade-in-up">
-                <strong>Required:</strong> Please provide either an email address OR a 10-digit contact number, and
-                select how you heard about us to submit the form.
+                <strong>Required:</strong> Please provide a 10-digit contact number and select how you heard about us to
+                submit the form.
               </div>
             )}
 
@@ -373,7 +371,7 @@ export function ContactSection() {
                 type="submit"
                 disabled={
                   isSubmitting ||
-                  (!hasEmail && !hasContact) ||
+                  !hasContact ||
                   (hasContact && !isContactValid) ||
                   !hasHowDidYouHear ||
                   (formData.howDidYouHear === "Other" && !hasOtherSource)
