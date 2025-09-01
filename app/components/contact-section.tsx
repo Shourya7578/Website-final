@@ -305,12 +305,10 @@ export function ContactSection() {
                 <select
                   value={formData.howDidYouHear}
                   onChange={(e) => handleInputChange("howDidYouHear", e.target.value)}
-                  className={`w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors duration-200 appearance-none bg-white cursor-pointer ${
+                  className={`w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors duration-200 appearance-none bg-white cursor-pointer text-[#666] ${
                     howDidYouHearError
                       ? "border-red-300 focus:border-red-500 bg-red-50"
-                      : hasHowDidYouHear
-                        ? "border-green-300 focus:border-green-500 bg-green-50"
-                        : "border-[#E6E6E6] focus:border-[#FF6B2B]"
+                      : "border-[#E6E6E6] focus:border-[#FF6B2B]"
                   }`}
                   disabled={isSubmitting}
                   required
@@ -327,10 +325,6 @@ export function ContactSection() {
               </div>
 
               {howDidYouHearError && <p className="text-red-500 text-xs font-medium">{howDidYouHearError}</p>}
-
-              {!howDidYouHearError && hasHowDidYouHear && formData.howDidYouHear !== "Other" && (
-                <p className="text-green-600 text-xs font-medium">✓ Source selected</p>
-              )}
 
               {/* Show text input when "Other" is selected */}
               {formData.howDidYouHear === "Other" && (
