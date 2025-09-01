@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Menu, X } from "lucide-react"
 import Image from "next/image"
+import { trackButtonClick } from "./analytics"
 
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -78,7 +79,10 @@ export function Navbar() {
           {/* CTA Button - Right aligned */}
           <div className="hidden md:flex flex-shrink-0">
             <button
-              onClick={() => scrollToSection("contact")}
+              onClick={() => {
+                trackButtonClick("partner_with_us", "navbar")
+                scrollToSection("contact")
+              }}
               className="bg-[#FF6B2B] text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-[#e55a24] transition-all duration-200 shadow-md hover:shadow-lg"
             >
               Partner With Us
@@ -134,7 +138,10 @@ export function Navbar() {
                 Why Us
               </button>
               <button
-                onClick={() => scrollToSection("contact")}
+                onClick={() => {
+                  trackButtonClick("partner_with_us", "navbar")
+                  scrollToSection("contact")
+                }}
                 className="block bg-[#FF6B2B] text-white px-6 py-2 rounded-full text-base font-medium hover:bg-[#e55a24] transition-colors duration-200 mt-4 mx-3"
               >
                 Partner With Us

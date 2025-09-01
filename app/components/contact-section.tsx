@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState } from "react"
 import { CheckCircle, X, Loader2, ChevronDown } from "lucide-react"
+import { trackFormSubmission } from "./analytics"
 
 export function ContactSection() {
   const [formData, setFormData] = useState({
@@ -155,6 +156,9 @@ export function ContactSection() {
       })
 
       if (response.ok) {
+        // Track form submission
+        trackFormSubmission("partnership_inquiry")
+
         setSubmitStatus("success")
         setShowThankYouModal(true)
 
@@ -178,6 +182,7 @@ export function ContactSection() {
       }
     } catch (error) {
       console.error("Submission error:", error)
+
       setErrorMessage(
         "There was an error submitting your inquiry. Please try again or contact us directly at sales@scandalousfoods.in",
       )
