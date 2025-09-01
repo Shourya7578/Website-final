@@ -303,7 +303,7 @@ export function ContactSection() {
                 <select
                   value={formData.howDidYouHear}
                   onChange={(e) => handleInputChange("howDidYouHear", e.target.value)}
-                  className={`w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors duration-200 appearance-none bg-white cursor-pointer text-[#666] ${
+                  className={`w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors duration-200 appearance-none bg-white cursor-pointer placeholder:text-gray-400 text-gray-400 ${
                     howDidYouHearError
                       ? "border-red-300 focus:border-red-500 bg-red-50"
                       : "border-[#E6E6E6] focus:border-[#FF6B2B]"
@@ -318,7 +318,7 @@ export function ContactSection() {
                   ))}
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <ChevronDown className="w-5 h-5 text-[#666]" />
+                  <ChevronDown className="w-5 h-5 text-gray-400" />
                 </div>
               </div>
 
