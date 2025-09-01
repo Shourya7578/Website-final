@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState } from "react"
-import { CheckCircle, X, Loader2 } from "lucide-react"
+import { CheckCircle, X, Loader2, ChevronDown } from "lucide-react"
 
 export function ContactSection() {
   const [formData, setFormData] = useState({
@@ -13,6 +13,8 @@ export function ContactSection() {
     contactNumber: "",
     email: "",
     message: "",
+    howDidYouHear: "",
+    otherSource: "",
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -20,15 +22,35 @@ export function ContactSection() {
   const [showThankYouModal, setShowThankYouModal] = useState(false)
   const [contactNumberError, setContactNumberError] = useState("")
   const [errorMessage, setErrorMessage] = useState("")
+  const [howDidYouHearError, setHowDidYouHearError] = useState("")
+  const [showValidationMessage, setShowValidationMessage] = useState(false)
 
   // Formspree endpoint
   const FORMSPREE_ENDPOINT = "https://formspree.io/f/myzplrkr"
+
+  // How did you hear about us options
+  const hearAboutUsOptions = [
+    { value: "", label: "How did you hear about us? *" },
+    { value: "Instagram", label: "Instagram" },
+    { value: "Google Search", label: "Google Search" },
+    { value: "LinkedIn", label: "LinkedIn" },
+    { value: "Industry Event", label: "Industry Event" },
+    { value: "Other", label: "Other" },
+  ]
 
   const handleInputChange = (field: string, value: string) => {
     setFormData({ ...formData, [field]: value })
     if (submitStatus === "error") {
       setSubmitStatus("idle")
       setErrorMessage("")
+    }
+    // Clear specific field errors when user starts typing
+    if (field === "howDidYouHear") {
+      setHowDidYouHearError("")
+    }
+    // Hide validation message when user starts interacting
+    if (showValidationMessage) {
+      setShowValidationMessage(false)
     }
   }
 
@@ -62,11 +84,18 @@ export function ContactSection() {
     const hasEmail = formData.email.trim() !== ""
     const hasContact = formData.contactNumber.trim() !== ""
     const isContactValid = formData.contactNumber.trim() === "" || validateContactNumber(formData.contactNumber)
+    const hasHowDidYouHear = formData.howDidYouHear.trim() !== ""
+    const hasOtherSource = formData.howDidYouHear === "Other" ? formData.otherSource.trim() !== "" : true
 
-    // Validation
+    // Reset errors
+    setErrorMessage("")
+    setHowDidYouHearError("")
+
+    // Validation - show validation message only when form is submitted with missing info
     if (!hasEmail && !hasContact) {
       setSubmitStatus("error")
       setErrorMessage("Please provide either an email address or contact number to submit the form.")
+      setShowValidationMessage(true)
       return
     }
 
@@ -74,14 +103,35 @@ export function ContactSection() {
       setContactNumberError("Contact number must be exactly 10 digits")
       setSubmitStatus("error")
       setErrorMessage("Please enter a valid 10-digit contact number.")
+      setShowValidationMessage(true)
+      return
+    }
+
+    if (!hasHowDidYouHear) {
+      setHowDidYouHearError("Please select how you heard about us")
+      setSubmitStatus("error")
+      setErrorMessage("Please select how you heard about us.")
+      setShowValidationMessage(true)
+      return
+    }
+
+    if (formData.howDidYouHear === "Other" && !hasOtherSource) {
+      setHowDidYouHearError("Please specify how you heard about us")
+      setSubmitStatus("error")
+      setErrorMessage("Please specify how you heard about us.")
+      setShowValidationMessage(true)
       return
     }
 
     setIsSubmitting(true)
     setSubmitStatus("idle")
     setErrorMessage("")
+    setShowValidationMessage(false)
 
     try {
+      // Determine the final source value
+      const finalSource = formData.howDidYouHear === "Other" ? formData.otherSource : formData.howDidYouHear
+
       // Submit to Formspree
       const response = await fetch(FORMSPREE_ENDPOINT, {
         method: "POST",
@@ -96,6 +146,7 @@ export function ContactSection() {
           contact_number: formData.contactNumber,
           email: formData.email,
           message: formData.message,
+          how_did_you_hear: finalSource,
           lead_source: "Website Contact Form",
           lead_type: "Partnership Inquiry",
           submission_time: new Date().toISOString(),
@@ -116,8 +167,12 @@ export function ContactSection() {
           contactNumber: "",
           email: "",
           message: "",
+          howDidYouHear: "",
+          otherSource: "",
         })
         setContactNumberError("")
+        setHowDidYouHearError("")
+        setShowValidationMessage(false)
       } else {
         throw new Error("Formspree submission failed")
       }
@@ -127,6 +182,7 @@ export function ContactSection() {
         "There was an error submitting your inquiry. Please try again or contact us directly at sales@scandalousfoods.in",
       )
       setSubmitStatus("error")
+      setShowValidationMessage(true)
     } finally {
       setIsSubmitting(false)
     }
@@ -135,6 +191,8 @@ export function ContactSection() {
   const hasEmail = formData.email.trim() !== ""
   const hasContact = formData.contactNumber.trim() !== ""
   const isContactValid = formData.contactNumber.trim() === "" || validateContactNumber(formData.contactNumber)
+  const hasHowDidYouHear = formData.howDidYouHear.trim() !== ""
+  const hasOtherSource = formData.howDidYouHear === "Other" ? formData.otherSource.trim() !== "" : true
 
   return (
     <section id="contact" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
@@ -241,6 +299,62 @@ export function ContactSection() {
               </div>
             </div>
 
+            {/* How did you hear about us dropdown - REQUIRED */}
+            <div className="space-y-4">
+              <div className="relative">
+                <select
+                  value={formData.howDidYouHear}
+                  onChange={(e) => handleInputChange("howDidYouHear", e.target.value)}
+                  className={`w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors duration-200 appearance-none bg-white cursor-pointer ${
+                    howDidYouHearError
+                      ? "border-red-300 focus:border-red-500 bg-red-50"
+                      : hasHowDidYouHear
+                        ? "border-green-300 focus:border-green-500 bg-green-50"
+                        : "border-[#E6E6E6] focus:border-[#FF6B2B]"
+                  }`}
+                  disabled={isSubmitting}
+                  required
+                >
+                  {hearAboutUsOptions.map((option) => (
+                    <option key={option.value} value={option.value} disabled={option.value === ""}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <ChevronDown className="w-5 h-5 text-[#666]" />
+                </div>
+              </div>
+
+              {howDidYouHearError && <p className="text-red-500 text-xs font-medium">{howDidYouHearError}</p>}
+
+              {!howDidYouHearError && hasHowDidYouHear && formData.howDidYouHear !== "Other" && (
+                <p className="text-green-600 text-xs font-medium">✓ Source selected</p>
+              )}
+
+              {/* Show text input when "Other" is selected */}
+              {formData.howDidYouHear === "Other" && (
+                <div className="animate-fade-in-up">
+                  <input
+                    type="text"
+                    placeholder="Please specify how you heard about us... *"
+                    value={formData.otherSource}
+                    onChange={(e) => handleInputChange("otherSource", e.target.value)}
+                    className={`w-full px-4 py-3 rounded-lg border focus:outline-none transition-colors duration-200 ${
+                      formData.howDidYouHear === "Other" && !hasOtherSource
+                        ? "border-red-300 focus:border-red-500 bg-red-50"
+                        : hasOtherSource
+                          ? "border-green-300 focus:border-green-500 bg-green-50"
+                          : "border-[#E6E6E6] focus:border-[#FF6B2B]"
+                    }`}
+                    disabled={isSubmitting}
+                    required
+                  />
+                  {hasOtherSource && <p className="text-green-600 text-xs mt-1 font-medium">✓ Source specified</p>}
+                </div>
+              )}
+            </div>
+
             <div>
               <textarea
                 placeholder="Tell us about your business and how we can help..."
@@ -252,15 +366,24 @@ export function ContactSection() {
               />
             </div>
 
-            <div className="text-sm text-[#666] bg-blue-50 p-4 rounded-lg border border-blue-200">
-              <strong>Required:</strong> Please provide either an email address OR a 10-digit contact number to submit
-              the form.
-            </div>
+            {/* Only show validation message when form is submitted with missing info */}
+            {showValidationMessage && (
+              <div className="text-sm text-[#666] bg-blue-50 p-4 rounded-lg border border-blue-200 animate-fade-in-up">
+                <strong>Required:</strong> Please provide either an email address OR a 10-digit contact number, and
+                select how you heard about us to submit the form.
+              </div>
+            )}
 
             <div className="text-center">
               <button
                 type="submit"
-                disabled={isSubmitting || (!hasEmail && !hasContact) || (hasContact && !isContactValid)}
+                disabled={
+                  isSubmitting ||
+                  (!hasEmail && !hasContact) ||
+                  (hasContact && !isContactValid) ||
+                  !hasHowDidYouHear ||
+                  (formData.howDidYouHear === "Other" && !hasOtherSource)
+                }
                 className="bg-[#FF6B2B] text-white px-12 py-4 rounded-full text-lg font-semibold hover:bg-[#e55a24] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center mx-auto"
               >
                 {isSubmitting ? (

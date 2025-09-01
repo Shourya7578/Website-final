@@ -8,9 +8,7 @@ export function Footer() {
           {/* Brand */}
           <div className="space-y-4">
             <h3 className="text-2xl font-bold font-['Poppins']">Scandalous Foods</h3>
-            <p className="text-gray-300 font-['Open_Sans']">
-              Targeting post meal impulse consumption through the restaurant industry.
-            </p>
+            <p className="text-gray-300 font-['Open_Sans'] text-sm">Aditof Private Limited.</p>
           </div>
 
           {/* Contact Info */}
@@ -34,7 +32,7 @@ export function Footer() {
 
           {/* Certifications & Social */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold font-['Poppins']">Follow Us</h4>
+            <h4 className="text-lg font-semibold font-['Poppins']">Follow Us On</h4>
             <div className="flex space-x-4">
               <a
                 href="https://www.instagram.com/scandalousfoods/"
