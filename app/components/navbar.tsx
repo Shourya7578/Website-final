@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Menu, X } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 import { trackButtonClick } from "./analytics"
 
 export function Navbar() {
@@ -21,7 +22,7 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex-shrink-0 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+          <Link href="/" className="flex-shrink-0 cursor-pointer">
             <Image
               src="/images/scandalous-logo.png"
               alt="Scandalous Foods Logo"
@@ -32,11 +33,11 @@ export function Navbar() {
               quality={100}
               priority
             />
-          </div>
+          </Link>
 
           {/* Desktop Navigation - Centered */}
           <div className="hidden md:flex flex-1 justify-center">
-            <div className="flex items-baseline space-x-12">
+            <div className="flex items-baseline space-x-8">
               <button
                 onClick={() => scrollToSection("about")}
                 className="text-[#1D1D1D] hover:text-[#FF6B2B] px-3 py-2 text-sm font-medium transition-colors duration-200"

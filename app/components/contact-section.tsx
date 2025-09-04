@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState } from "react"
-import { CheckCircle, X, Loader2, ChevronDown } from "lucide-react"
+import { CheckCircle, X, Loader2, ChevronDown, Mail } from "lucide-react"
 import { trackFormSubmission } from "./analytics"
 
 export function ContactSection() {
@@ -397,7 +397,10 @@ export function ContactSection() {
                     Submitting...
                   </>
                 ) : (
-                  "Partner With Us"
+                  <>
+                    <Mail className="w-5 h-5 mr-2" />
+                    Contact Us
+                  </>
                 )}
               </button>
             </div>

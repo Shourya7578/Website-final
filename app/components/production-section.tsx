@@ -138,10 +138,10 @@ export function ProductionSection() {
               description: "Expert chefs preparing authentic mithai with modern hygiene standards",
             },
             {
-              src: "/images/packaging-operation-new.jpeg",
-              alt: "Team member operating semi-automated sealing equipment for individual mithai portions",
+              src: "/images/semi-automated-sealing-equipment.png",
+              alt: "Semi-automated sealing equipment with individual mithai portions ready for packaging",
               title: "Semi Automated Production",
-              description: "Modern sealing technology ensures perfect portion control",
+              description: "Modern sealing technology ensures perfect portion control and freshness",
             },
             {
               src: "/images/cold-storage.jpg",

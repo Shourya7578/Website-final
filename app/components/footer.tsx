@@ -30,9 +30,9 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Certifications & Social */}
+          {/* Social & Certifications */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold font-['Poppins']">Follow Us On</h4>
+            <h4 className="text-lg font-semibold font-['Poppins']">Follow Us</h4>
             <div className="flex space-x-4">
               <a
                 href="https://www.instagram.com/scandalousfoods/"
